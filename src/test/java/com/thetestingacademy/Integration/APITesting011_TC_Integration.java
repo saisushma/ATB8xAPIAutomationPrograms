@@ -7,6 +7,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.*;
 
 public class APITesting011_TC_Integration {
 
@@ -47,6 +48,7 @@ public class APITesting011_TC_Integration {
          //extract the token
         token = response.jsonPath().getString("token");
         System.out.println(token);
+        assertThat(token).isAlphanumeric().isNotEmpty().isNotNull().isNotBlank();
 
         return token;
     }
@@ -77,6 +79,8 @@ public class APITesting011_TC_Integration {
 
         bookingId = response.jsonPath().getString("bookingid");
         System.out.println(bookingId);
+        assertThat(bookingId).isNotBlank().isNotNull().isNotEmpty();
+
         return bookingId;
 
         //https://restful-booker.herokuapp.com/booking
