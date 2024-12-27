@@ -8,6 +8,7 @@ import io.restassured.specification.RequestSpecification;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.*;
+import org.hamcrest.Matchers;
 
 public class APITesting011_TC_Integration {
 
@@ -117,6 +118,11 @@ public class APITesting011_TC_Integration {
         validatableResponse = response.then().log().all();
         validatableResponse.statusCode(200);
 
+        validatableResponse.body("booking.firstname", Matchers.equalTo("Sai"));
+        validatableResponse.body("bookingid",Matchers.notNullValue());
+
+        Assert.assertNotNull(bookingId);
+        Assert.assertEquals("booking.firstname", "Sai");
     }
 
     @Test(priority = 2)
@@ -126,10 +132,20 @@ public class APITesting011_TC_Integration {
         requestSpecification.baseUri("https://restful-booker.herokuapp.com");
         requestSpecification.basePath("/booking/"+bookingId);
         response = requestSpecification.when().log().all().get();
-        requestSpecification.then().log().all().statusCode(200);
+       validatableResponse = response.then().log().all();
+       validatableResponse .statusCode(200);
 
+       //TestNG
         String lName = response.jsonPath().getString("lastname");
         Assert.assertEquals(lName,"Sharma");
+
+        //rest assured Matchers
+        validatableResponse.body("booking.lastname",Matchers.equalTo("Sharma"));
+        validatableResponse.body("booking.lastname",Matchers.notNullValue());
+
+        //assertJ
+        assertThat(bookingId).isNotEmpty().isNotNull().isAlphanumeric();
+
 
     }
 
@@ -147,6 +163,17 @@ public class APITesting011_TC_Integration {
         response = requestSpecification.when().delete();
         validatableResponse = response.then().log().all();
         validatableResponse.statusCode(201); // #TODO #1 - delete bug
+
+        //using rest assured matching
+        validatableResponse.body("bookingid",Matchers.empty());
+
+        //testNG assert
+        Assert.assertNull(bookingId);
+
+        //AssertJ
+
+        assertThat(bookingId).isNull();
+
 
     }
 
